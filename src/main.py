@@ -48,7 +48,7 @@ def registro_usuario():
      dictionary={}
      body = request.json
      user_email=body["email"],
-     exists = db.session.query(User.email).filter_by(email=User.email).first() is not None 
+     exists = db.session.query(User.email).filter_by(email=user_email).first() is not None 
      if exists:
         return jsonify({"msg":f"The email:{user_email} already exist in database, please add another user_email"})
      else:
@@ -56,11 +56,9 @@ def registro_usuario():
              email=body["email"],
              password=body["password"]
              )
-             
-     dictionary = user.serialize()
-     ##return jsonify(decoded_object), 201
-     
-     return jsonify(dictionary), 201       
+         dictionary = user.serialize()
+         ##return jsonify(decoded_object), 201
+         return jsonify(dictionary), 201       
 
 
 
