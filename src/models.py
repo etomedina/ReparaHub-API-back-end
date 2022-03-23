@@ -53,8 +53,7 @@ class User(Base):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-    accesses = db.relationship('Access', backref='user', lazy=True)
+    accesses = db.relationship('Incident', backref='user', lazy=True)
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -67,24 +66,6 @@ class User(Base):
             # do not serialize the password, its a security breach
         }
 
-class Access(Base):
-    id = db.Column(db.Integer, primary_key=True)
-    coordinate = db.Column(db.String(120))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
-    incidenmts = db.relationship('Incident', backref='user', lazy=True)
-
-
-
-    def __repr__(self):
-        return f" {self.id},{self.coordinate}"    
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "coordinate":self.coordinate
-            # do not serialize the password, its a security breach
-        }
-
 class Incident(Base):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
@@ -93,7 +74,7 @@ class Incident(Base):
     rating=db.Column(db.String(100))
     status=db.Column(db.String(90))
     picture_incident =db.Column(db.String(240))
-    acces_id = db.Column(db.Integer, db.ForeignKey('access.id', ondelete="CASCADE"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     trackings = db.relationship('Tracking', backref='user', lazy=True)
     provider_id=db.Column(db.Integer, db.ForeignKey('provider.id', ondelete="CASCADE"), nullable=False)        
    

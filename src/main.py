@@ -9,6 +9,8 @@ from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
+import json
+
 #from models import Person
 
 app = Flask(__name__)
@@ -40,6 +42,30 @@ def handle_hello():
     return jsonify(response_body), 200
 
 # this only runs if `$ python src/main.py` is executed
+
+@app.route('/registro_usuario/', methods=['POST'])
+def registro_usuario():
+     dictionary={}
+     body = request.json
+     user_email=body["email"],
+     exists = db.session.query(User.email).filter_by(email=User.email).first() is not None 
+     if exists:
+        return jsonify({"msg":f"The email:{user_email} already exist in database, please add another user_email"})
+     else:
+         user = User.create(
+             email=body["email"],
+             password=body["password"]
+             )
+             
+     dictionary = user.serialize()
+     ##return jsonify(decoded_object), 201
+     
+     return jsonify(dictionary), 201       
+
+
+
+
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3000))
     app.run(host='0.0.0.0', port=PORT, debug=False)
