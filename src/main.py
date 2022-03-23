@@ -45,20 +45,20 @@ def handle_hello():
 
 @app.route('/registro_usuario/', methods=['POST'])
 def registro_usuario():
-     dictionary={}
-     body = request.json
-     user_email=body["email"],
-     exists = db.session.query(User.email).filter_by(email=user_email).first() is not None 
-     if exists:
+    dictionary={}
+    body = request.json
+    user_email=body["email"],
+    exists = db.session.query(User.email).filter_by(email=user_email).first() is not None 
+    if exists:
         return jsonify({"msg":f"The email:{user_email} already exist in database, please add another user_email"})
-     else:
-         user = User.create(
-             email=body["email"],
-             password=body["password"]
+    else:
+        user = User.create(
+            email=body["email"],
+            password=body["password"]
              )
-         dictionary = user.serialize()
-         ##return jsonify(decoded_object), 201
-         return jsonify(dictionary), 201       
+        dictionary = user.serialize()
+        ##return jsonify(decoded_object), 201
+        return jsonify(dictionary), 201       
 
 
 
