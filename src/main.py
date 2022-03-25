@@ -54,16 +54,13 @@ def registro_usuario():
     else:
         user = User.create(
             email=body["email"],
-            password=body["password"]
-            name=body["name"]
+            password=body["password"],
+            name=body["name"],
             familyname=body["familyname"]
              )
         dictionary = user.serialize()
         ##return jsonify(decoded_object), 201
         return jsonify(dictionary), 201       
-
-
-
 
 
 if __name__ == '__main__':
