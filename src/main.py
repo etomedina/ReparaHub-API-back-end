@@ -55,6 +55,8 @@ def registro_usuario():
         user = User.create(
             email=body["email"],
             password=body["password"]
+            name=body["name"]
+            familyname=body["familyname"]
              )
         dictionary = user.serialize()
         ##return jsonify(decoded_object), 201
