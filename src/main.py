@@ -10,6 +10,9 @@ from utils import APIException, generate_sitemap
 from admin import setup_admin
 from models import db, User
 import json
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended  import JWTManager,create_access_token, get_jwt_identity, jwt_required
+
 
 #from models import Person
 
@@ -17,10 +20,13 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_CONNECTION_STRING')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY']= os.environ.get('FLASK_API_KEY')
 MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 setup_admin(app)
+jwt=JWTManager(app)
+
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -50,7 +56,7 @@ def registro_usuario():
     user_email=body["email"],
     exists = db.session.query(User.email).filter_by(email=user_email).first() is not None 
     if exists:
-        return jsonify({"msg":f"The email:{user_email} already exist in database, please add another user_email"})
+        return jsonify({"msg":f"The email:{user_email} already exist in database, please add another user_email"}),400
     else:
         user = User.create(
             email=body["email"],
@@ -61,6 +67,30 @@ def registro_usuario():
         dictionary = user.serialize()
         ##return jsonify(decoded_object), 201
         return jsonify(dictionary), 201       
+
+
+
+@app.route('/login', methods=['POST'])
+def login_user():
+    body=request.json
+    user_login=User.login(
+        body["email"],body["password"]
+    )
+    if user_login:
+        access_token=create_access_token(identity=user_login.id)
+        print (access_token)
+        return jsonify({ "token": access_token, "user_id": user_login.id }),201
+        ##return jsonify(access_token),201  #201 de create
+    else:
+        return jsonify({"msg":"Please check your data, there are some mistake"}),400 
+
+@app.route("/private", methods=["GET"])
+@jwt_required()
+def protected():
+    user_id=get_jwt_identity()
+    user=User.query.get(user_id)
+    return jsonify(user.serialize()),200
+
 
 
 if __name__ == '__main__':
