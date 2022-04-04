@@ -85,8 +85,8 @@ class User(Base):
 
 class Incident(Base):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    description = db.Column(db.String(240))
+    car_fail = db.Column(db.String(200))
+    fail_description = db.Column(db.String(240))
     coordinate=db.Column(db.String(100))
     rating=db.Column(db.String(100))
     status=db.Column(db.String(90))
@@ -94,9 +94,11 @@ class Incident(Base):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
     trackings = db.relationship('Tracking', backref='user', lazy=True)
     provider_id=db.Column(db.Integer, db.ForeignKey('provider.id', ondelete="CASCADE"), nullable=False)        
-   
     provider = db.relationship("Provider", back_populates="incident", uselist=False)
-      
+    Vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id',ondelete="CASCADE"),nullable=False)
+
+
+
     def __repr__(self):
         return f" {self.id},{self.name},{self.coordinate}"    
 
@@ -163,7 +165,7 @@ class Vehicle(Base):
     year=db.Column(db.String(50))
     transmision=db.Column(db.String(120))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable=False)
-   
+    incedents= db.relationship('Incident', backref='vehicle', lazy=True)
   
     def __repr__(self):
         return f" {self.id},{self.make},{self.model}"    
