@@ -175,7 +175,8 @@ class Vehicle(Base):
             "model": self.model,
             "category": self.category,
             "year": self.year,
-            "transmision": self.transmision
+            "transmision": self.transmision,
+            "user_id":self.user_id
             
             # do not serialize the password, its a security breach
         }

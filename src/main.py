@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import Vehicle, db, User
 import json
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_jwt_extended  import JWTManager,create_access_token, get_jwt_identity, jwt_required
@@ -91,6 +91,26 @@ def protected():
     user_id=get_jwt_identity()
     user=User.query.get(user_id)
     return jsonify(user.serialize()),200
+
+
+@app.route('/record_car/', methods=['POST'])
+def record_incident():
+    dictionary={}
+    body=request.json
+    vehicle = Vehicle.create(
+        make=body["make"],
+        model=body["model"],
+        category=body["category"],
+        year=body["year"],
+        transmision=body["transmision"],
+        user_id=body["user_id"]
+     )
+    dictionary = vehicle.serialize()
+    return jsonify(dictionary), 201 
+    ##return jsonify(decoded_object), 201
+    ##return jsonify(user.serialize()),200
+
+
 
 
 
