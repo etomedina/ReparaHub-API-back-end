@@ -57,6 +57,9 @@ class User(Base):
     familyname=db.Column(db.String(120))
     telephone=db.Column(db.String(30))
     accesses = db.relationship('Incident', backref='user', lazy=True)
+    vehicleses = db.relationship('Vehicle', backref='user', lazy=True)
+
+
 
     def __repr__(self):
         return '<User %r>' % self.email
@@ -149,6 +152,31 @@ class Provider(Base):
             "coordinate": self.coordinate,
             "category": self.category,
             "rating": self.rating
+            # do not serialize the password, its a security breach
+        }
+
+class Vehicle(Base):
+    id = db.Column(db.Integer, primary_key=True)
+    make = db.Column(db.String(150))
+    model = db.Column(db.String(240))
+    category=db.Column(db.String(200))
+    year=db.Column(db.String(50))
+    transmision=db.Column(db.String(120))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+        nullable=False)
+   
+  
+    def __repr__(self):
+        return f" {self.id},{self.make},{self.model}"    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "make": self.make,
+            "model": self.model,
+            "category": self.category,
+            "year": self.year,
+            "transmision": self.transmision
+            
             # do not serialize the password, its a security breach
         }
 
