@@ -55,6 +55,7 @@ class User(Base):
     password = db.Column(db.String(80), unique=False, nullable=False)
     name=db.Column(db.String(120))
     familyname=db.Column(db.String(120))
+    telephone=db.Column(db.String(30))
     accesses = db.relationship('Incident', backref='user', lazy=True)
 
     def __repr__(self):
@@ -65,6 +66,7 @@ class User(Base):
             "id": self.id,
             "email":self.email,
             "name":self.name,
+            "telephone":self.telephone,
             "familyname":self.familyname
             # do not serialize the password, its a security breach
         }

@@ -62,6 +62,7 @@ def registro_usuario():
             email=body["email"],
             password=body["password"],
             name=body["name"],
+            telephone=body["telephone"],
             familyname=body["familyname"]
              )
         dictionary = user.serialize()
